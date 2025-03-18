@@ -6,7 +6,7 @@ class Place(models.Model):
     description_short = models.TextField(verbose_name='Короткое описание')
     description_long = models.TextField(verbose_name='Длинное название')
     lng = models.FloatField(verbose_name='Долгота')
-    lan = models.FloatField(verbose_name='Широта') #исправить на lat
+    lat = models.FloatField(verbose_name='Широта')
 
     first_image = models.ForeignKey(
         'Image',
