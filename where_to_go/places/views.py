@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.templatetags.static import static
 from django.http import JsonResponse, HttpResponse
+from django.urls import reverse
 from .models import Place
 import json
 
@@ -23,8 +24,8 @@ def place_details(request, place_id):
         "coordinates": {
             "lng": place.lng,
             "lat": place.lat
+        }
     }
-}
 
     return JsonResponse(place_data, json_dumps_params={'ensure_ascii': False, 'indent': 4})
 
@@ -43,7 +44,7 @@ def index(request):
             "properties": {
                 "title": place.title,
                 "placeId": place.id,
-                "detailsUrl": static('places/placeholder.json')
+                "detailsUrl": reverse('place_details', args=[place.id])
             }
         }
         features.append(feature)
