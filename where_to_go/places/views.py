@@ -8,13 +8,8 @@ import json
 
 def place_details(request, place_id):
     place = get_object_or_404(Place, id=place_id)
-
-    imgs = []
-    if place.first_image:
-        imgs.append(place.first_image.image.url)
-
-    for image in place.second_image.all():
-        imgs.append(image.image.url)
+    images = place.images.all()
+    imgs = [image.image.url for image in images]
 
     place_data = {
         "title": place.title,
@@ -53,8 +48,6 @@ def index(request):
         "type": "FeatureCollection",
         "features": features
     }
-
-    print(json.dumps(geojson, ensure_ascii=False, indent=4))
 
     geojson_str = json.dumps(geojson, ensure_ascii=False, indent=4)
     return render(request, 'index.html', {'geojson': geojson_str})
