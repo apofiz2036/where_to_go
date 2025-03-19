@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.templatetags.static import static
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 from django.urls import reverse
 from .models import Place
 import json
