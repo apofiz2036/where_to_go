@@ -22,6 +22,10 @@ class Image(models.Model):
     type_image = models.CharField(max_length=50, choices=TYPE_IMAGE, verbose_name='тип картинки')
     image = models.ImageField(verbose_name='Картинка')
     place = models.ForeignKey(Place, on_delete=models.CASCADE, related_name='images', null=True, blank=True)
+    order = models.PositiveIntegerField(default=0, blank=False, null=False, verbose_name='порядок')
+
+    class Meta:
+        ordering = ['order']
 
     def __str__(self):
         return self.title
