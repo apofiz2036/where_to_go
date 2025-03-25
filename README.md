@@ -37,3 +37,25 @@
    
 5. **Загрузите тестовые данные:**
 	Вы можете использовать админку Django для добавления локаций и изображений. Перейдите по адресу http://127.0.0.1:8000/admin/ и войдите с учётными данными суперпользователя.
+	
+6. **Команда load_place**
+	Автоматическая загрузка локаций из JSON-файлов с GitHub в базу данных Django.
+	
+	Для использования введите команду:
+	```bash
+	python manage.py load_place "https://api.github.com/repos/username/repository_name/contents/places_data"
+	```
+	
+	JSON файл должен иметь следующий формат:
+	```json
+	{
+	  "title": "Название",
+	  "imgs": ["url1", "url2"],
+	  "description_short": "Короткое описание",
+	  "description_long": "HTML-описание",
+	  "coordinates": {
+		"lng": "долгота",
+		"lat": "широта"
+	  }
+	}
+	```
