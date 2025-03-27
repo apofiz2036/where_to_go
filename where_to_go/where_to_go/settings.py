@@ -10,15 +10,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = env.str('SECRET_KEY')
 
 DEBUG = env.bool('DEBUG', default=False)
-if DEBUG:
-    STATIC_URL = '/static/'
-    MEDIA_URL = '/media/'
-    MEDIA_ROOT = BASE_DIR / 'media'
-else:
-    STATIC_URL = '/static/'
-    STATIC_ROOT = BASE_DIR / 'staticfiles'
-    MEDIA_URL = '/media/'
-    MEDIA_ROOT = BASE_DIR / 'media'
+
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost', '127.0.0.1'])
 
