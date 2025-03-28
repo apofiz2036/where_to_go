@@ -49,5 +49,4 @@ def index(request):
         "features": features
     }
 
-    geojson_str = json.dumps(geojson, ensure_ascii=False, indent=4)
-    return render(request, 'index.html', {'geojson': geojson_str})
+    return render(request, 'index.html', {'geojson': geojson})
