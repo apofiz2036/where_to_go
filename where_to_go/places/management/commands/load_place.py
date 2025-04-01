@@ -62,5 +62,5 @@ class Command(BaseCommand):
                     img_response.close()
 
             self.stdout.write(self.style.SUCCESS(
-                f'Успешно: {place.title} | Картинок: {len(place_data["imgs"])}'
+                f'Успешно: {place.title} | Картинок: {len(place_data['imgs'])}'
             ))
