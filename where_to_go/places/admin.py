@@ -11,7 +11,7 @@ class ImageInline(SortableInlineAdminMixin, admin.TabularInline):
     readonly_fields = ('image_preview',)
 
     def image_preview(self, obj):
-        return format_html('<img src="{}" style="max-height: 200px; width: auto;" />', obj.image.url)
+        return format_html('<img src="{}" style="max-height: 200px; max-width: 200px;" />', obj.image.url)
 
     image_preview.short_description = 'Превью'
 
@@ -22,11 +22,11 @@ class PlaceAdmin(SortableAdminBase, admin.ModelAdmin):
 
 
 class ImageAdmin(admin.ModelAdmin):
-    list_display = ('title', 'type_image', 'image_preview', 'order')
+    list_display = ('title', 'image_preview', 'order')
     readonly_fields = ('image_preview',)
 
     def image_preview(self, obj):
-        return format_html('<img src="{}" style="max-height: 200px; width: auto;" />', obj.image.url)
+        return format_html('<img src="{}" style="max-height: 200px; max-width: 200px;" />', obj.image.url)
 
     image_preview.short_description = 'Превью'
 

@@ -30,8 +30,8 @@ class Command(BaseCommand):
             place, created = Place.objects.get_or_create(
                 title=place_data['title'],
                 defaults={
-                    'description_short': place_data['description_short'],
-                    'description_long': place_data['description_long'],
+                    'short_description': place_data['description_short'],
+                    'long_description': place_data['description_long'],
                     'lng': float(place_data['coordinates']['lng']),
                     'lat': float(place_data['coordinates']['lat']),
                 }
@@ -49,7 +49,6 @@ class Command(BaseCommand):
                     img = Image(
                         place=place,
                         title=f'{place.title} - фото {order}',
-                        type_image='first_image' if order == 1 else 'second_image',
                         order=order
                     )
                     img.image.save(
