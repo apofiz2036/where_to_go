@@ -9,60 +9,70 @@ from places.models import Image, Place
 
 
 class Command(BaseCommand):
-    help = 'Загружает все локации из папки с JSON-файлами '
+    help = 'Загружает одну локацию из JSON файла'
 
     def add_arguments(self, parser):
-        parser.add_argument('github_folder_url', type=str)
+        parser.add_argument('json_url', type=str)
 
     def handle(self, *args, **options):
-        folder_url = options['github_folder_url']
+        json_url = options['json_url']
+        self.stdout.write(f'Загружаем {json_url}...')
 
-        response = requests.get(folder_url)
-        response.raise_for_status()
-        files = response.json()
+        try:
+            response = requests.get(json_url)
+            response.raise_for_status()
 
-        for file_info in files:
-            if not file_info['name'].endswith('.json'):
-                continue
+            try:
+                place_raw = response.json()
+            except ValueError as e:
+                self.stdout.write(self.style.ERROR(f'Невалидный JSON в ответе: {e}'))
+                return
+        except requests.exceptions.RequestException as e:
+            self.stdout.write(self.style.ERROR(f'Ошибка при запросе {json_url}: {e}'))
+            return
 
-            json_url = file_info['download_url']
-            self.stdout.write(f'Загружаем {json_url}...')
+        required_fields = [
+            'title',
+            'description_short',
+            'description_long',
+            'coordinates',
+            'imgs'
+        ]
 
-            place_data = requests.get(json_url).json()
+        if not all(field in place_raw for field in required_fields):
+            self.stdout.write(self.style.ERROR('В JSON отсутствуют обязательные поля'))
+            return
 
-            place, created = Place.objects.get_or_create(
-                title=place_data['title'],
-                defaults={
-                    'short_description': place_data['description_short'],
-                    'long_description': place_data['description_long'],
-                    'lng': float(place_data['coordinates']['lng']),
-                    'lat': float(place_data['coordinates']['lat']),
-                }
-            )
-            if not created:
-                place.images.all().delete()
+        place, created = Place.objects.get_or_create(
+            title=place_raw['title'],
+            defaults={
+                'short_description': place_raw['description_short'],
+                'long_description': place_raw['description_long'],
+                'lng': float(place_raw['coordinates']['lng']),
+                'lat': float(place_raw['coordinates']['lat']),
+            }
+        )
+        if not created:
+            place.images.all().delete()        
 
-            for order, img_url in enumerate(place_data['imgs'], start=1):
-                try:
-                    img_response = requests.get(img_url)
-                    img_response.raise_for_status()
+        for order, img_url in enumerate(place_raw['imgs'], start=1):
+            try:
+                img_response = requests.get(img_url)
+                img_response.raise_for_status()
 
-                    img_name = urlparse(img_url).path.split('/')[-1]
+                img_name = urlparse(img_url).path.split('/')[-1]
 
-                    img = Image(
-                        place=place,
-                        order=order
-                    )
-                    img.image.save(
-                        img_name,
-                        ContentFile(img_response.content),
-                        save=True
-                    )
-                except Exception as e:
-                    self.stdout.write(self.style.ERROR(f'Ошибка загрузки картинки {img_url}: {e}'))
-                finally:
+                Image.objects.create(
+                    place=place,
+                    order=order,
+                    image=ContentFile(img_response.content, name=img_name)
+                )
+            except Exception as e:
+                self.stdout.write(self.style.ERROR(f'Ошибка загрузки картинки {img_url}: {e}'))
+            finally:
+                if 'img_response' in locals():
                     img_response.close()
 
-            self.stdout.write(self.style.SUCCESS(
-                f'Успешно: {place.title} | Картинок: {len(place_data['imgs'])}'
-            ))
+        self.stdout.write(self.style.SUCCESS(
+            f"Успешно: {place.title} | Картинок: {len(place_raw['imgs'])}"
+        ))
