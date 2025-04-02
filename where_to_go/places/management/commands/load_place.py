@@ -1,8 +1,11 @@
-from django.core.management.base import BaseCommand
-from places.models import Place, Image  
-import requests
-from django.core.files.base import ContentFile
 from urllib.parse import urlparse
+
+import requests
+
+from django.core.files.base import ContentFile
+from django.core.management.base import BaseCommand
+
+from places.models import Image, Place
 
 
 class Command(BaseCommand):
@@ -48,7 +51,6 @@ class Command(BaseCommand):
 
                     img = Image(
                         place=place,
-                        title=f'{place.title} - фото {order}',
                         order=order
                     )
                     img.image.save(

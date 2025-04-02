@@ -1,9 +1,9 @@
-from django.shortcuts import render, get_object_or_404
-from django.templatetags.static import static
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, render
+from django.templatetags.static import static
 from django.urls import reverse
+
 from .models import Place
-import json
 
 
 def place_details(request, place_id):
