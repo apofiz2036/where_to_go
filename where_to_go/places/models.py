@@ -6,13 +6,11 @@ class Place(models.Model):
     title = models.CharField(max_length=100, verbose_name='Название', unique=True)
     short_description = models.TextField(
         blank=True,
-        null=True,
         default='', 
         verbose_name='Короткое описание'
     )
     long_description = HTMLField(
         blank=True,
-        null=True,
         default='', 
         verbose_name='Длинное описание'
     )
